@@ -1,13 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EF_project2.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EF_project2
 {
-    internal class ApplictionDbcontecxt : DbContext
+    internal class SalesContext : DbContext
     {
-        public DbSet<Prodacts> prodacts { get; set; }
-        public DbSet<Store> stores { get; set; }
-        public DbSet<Customer> customers { get; set; }
-        public DbSet<Sale> sales { get; set; }
+        public DbSet<Prodacts> Prodacts { get; set; }
+        public DbSet<Store> Stores { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Sale> Sales { get; set; }
       
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             
@@ -15,8 +16,14 @@ namespace EF_project2
         {
            
              base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer("Data Source=.; Initial Catalog=EIntegrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=SalesDb;Integrated Security=True;TrustServerCertificate=True;");
         } 
+            protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Sale>()
+                .Property(s => s.Date)
+                .HasDefaultValueSql("GETDATE()");
+        }
        
         static void Main(string[] args)
         {

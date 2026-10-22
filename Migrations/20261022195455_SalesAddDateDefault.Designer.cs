@@ -4,16 +4,19 @@ using EF_project2;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace EF_project2.Migrations
 {
-    [DbContext(typeof(ApplictionDbcontecxt))]
-    partial class ApplictionDbcontecxtModelSnapshot : ModelSnapshot
+    [DbContext(typeof(SalesContext))]
+    [Migration("20261022195455_SalesAddDateDefault")]
+    partial class SalesAddDateDefault
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace EF_project2.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("EF_project2.Customer", b =>
+            modelBuilder.Entity("EF_project2.Models.Customer", b =>
                 {
                     b.Property<int>("CustomerId")
                         .ValueGeneratedOnAdd()
@@ -35,17 +38,21 @@ namespace EF_project2.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(80)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(80)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("CustomerId");
 
-                    b.ToTable("customers");
+                    b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("EF_project2.Prodacts", b =>
+            modelBuilder.Entity("EF_project2.Models.Prodacts", b =>
                 {
                     b.Property<int>("ProdactsId")
                         .ValueGeneratedOnAdd()
@@ -53,8 +60,15 @@ namespace EF_project2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProdactsId"));
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -64,10 +78,10 @@ namespace EF_project2.Migrations
 
                     b.HasKey("ProdactsId");
 
-                    b.ToTable("prodacts");
+                    b.ToTable("Prodacts");
                 });
 
-            modelBuilder.Entity("EF_project2.Sale", b =>
+            modelBuilder.Entity("EF_project2.Models.Sale", b =>
                 {
                     b.Property<int>("SaleId")
                         .ValueGeneratedOnAdd()
@@ -75,16 +89,18 @@ namespace EF_project2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SaleId"));
 
-                    b.Property<int?>("CustomerId")
+                    b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("Date")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<int>("ProdactsId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StoreId")
+                    b.Property<int>("StoreId")
                         .HasColumnType("int");
 
                     b.HasKey("SaleId");
@@ -95,10 +111,10 @@ namespace EF_project2.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("sales");
+                    b.ToTable("Sales");
                 });
 
-            modelBuilder.Entity("EF_project2.Store", b =>
+            modelBuilder.Entity("EF_project2.Models.Store", b =>
                 {
                     b.Property<int>("StoreId")
                         .ValueGeneratedOnAdd()
@@ -107,28 +123,34 @@ namespace EF_project2.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StoreId"));
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
 
                     b.HasKey("StoreId");
 
-                    b.ToTable("stores");
+                    b.ToTable("Stores");
                 });
 
-            modelBuilder.Entity("EF_project2.Sale", b =>
+            modelBuilder.Entity("EF_project2.Models.Sale", b =>
                 {
-                    b.HasOne("EF_project2.Customer", "customer")
+                    b.HasOne("EF_project2.Models.Customer", "customer")
                         .WithMany()
-                        .HasForeignKey("CustomerId");
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("EF_project2.Prodacts", "prodacts")
+                    b.HasOne("EF_project2.Models.Prodacts", "prodacts")
                         .WithMany()
                         .HasForeignKey("ProdactsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EF_project2.Store", "store")
+                    b.HasOne("EF_project2.Models.Store", "store")
                         .WithMany()
-                        .HasForeignKey("StoreId");
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("customer");
 

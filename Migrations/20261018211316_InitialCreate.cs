@@ -6,99 +6,99 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EF_project2.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "customers",
+                name: "Customers",
                 columns: table => new
                 {
                     CustomerId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreaditCardNum = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    CreaditCardNum = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_customers", x => x.CustomerId);
+                    table.PrimaryKey("PK_Customers", x => x.CustomerId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "prodacts",
+                name: "Prodacts",
                 columns: table => new
                 {
                     ProdactsId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_prodacts", x => x.ProdactsId);
+                    table.PrimaryKey("PK_Prodacts", x => x.ProdactsId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "stores",
+                name: "Stores",
                 columns: table => new
                 {
                     StoreId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_stores", x => x.StoreId);
+                    table.PrimaryKey("PK_Stores", x => x.StoreId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "sales",
+                name: "Sales",
                 columns: table => new
                 {
                     SaleId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StoreId = table.Column<int>(type: "int", nullable: true),
                     CustomerId = table.Column<int>(type: "int", nullable: true),
                     ProdactsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_sales", x => x.SaleId);
+                    table.PrimaryKey("PK_Sales", x => x.SaleId);
                     table.ForeignKey(
-                        name: "FK_sales_customers_CustomerId",
+                        name: "FK_Sales_Customers_CustomerId",
                         column: x => x.CustomerId,
-                        principalTable: "customers",
+                        principalTable: "Customers",
                         principalColumn: "CustomerId");
                     table.ForeignKey(
-                        name: "FK_sales_prodacts_ProdactsId",
+                        name: "FK_Sales_Prodacts_ProdactsId",
                         column: x => x.ProdactsId,
-                        principalTable: "prodacts",
+                        principalTable: "Prodacts",
                         principalColumn: "ProdactsId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_sales_stores_StoreId",
+                        name: "FK_Sales_Stores_StoreId",
                         column: x => x.StoreId,
-                        principalTable: "stores",
+                        principalTable: "Stores",
                         principalColumn: "StoreId");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_sales_CustomerId",
-                table: "sales",
+                name: "IX_Sales_CustomerId",
+                table: "Sales",
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_sales_ProdactsId",
-                table: "sales",
+                name: "IX_Sales_ProdactsId",
+                table: "Sales",
                 column: "ProdactsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_sales_StoreId",
-                table: "sales",
+                name: "IX_Sales_StoreId",
+                table: "Sales",
                 column: "StoreId");
         }
 
@@ -106,16 +106,16 @@ namespace EF_project2.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "sales");
+                name: "Sales");
 
             migrationBuilder.DropTable(
-                name: "customers");
+                name: "Customers");
 
             migrationBuilder.DropTable(
-                name: "prodacts");
+                name: "Prodacts");
 
             migrationBuilder.DropTable(
-                name: "stores");
+                name: "Stores");
         }
     }
 }
